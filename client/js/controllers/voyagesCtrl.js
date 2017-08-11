@@ -7,7 +7,6 @@ function VoyagesCtrl($log, PortCall) {
   let ctrl = this;
 
   ctrl.voyages = [];
-
   ctrl.dateOptions = {
     initDate: new Date(2016, 00, 01),
     formatYear: 'yy',
@@ -19,6 +18,7 @@ function VoyagesCtrl($log, PortCall) {
 
     PortCall.getRoutes(params).$promise
       .then(voyages => {
+        console.log(voyages);
         ctrl.voyages = voyages;
       })
       .catch(err => {

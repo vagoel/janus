@@ -3,60 +3,70 @@
   <h1>Voyages</h1>
 
   <!-- Sample interface -->
+  <div class="row">
+    <form class="form-inline">
+      <div class="row">
+        <div class="col-md-7">
+          <div class="form-group">
+            <label>Departure Date</label>
+            <input type="text" class="form-control" ng-click="ctrl.isEtdOpen = !ctrl.isEtdOpen" uib-datepicker-popup="{{format}}" ng-model="ctrl.etd"
+              datepicker-options="ctrl.dateOptions" is-open="ctrl.isEtdOpen" />
+          </div>
 
-  <form class="form-inline">
-    <div class="form-group">
-      <label>Departure Port</label>
-      <input
-        type="text"
-        class="form-control"
-        ng-click="ctrl.isEtdOpen = !ctrl.isEtdOpen"
-        uib-datepicker-popup="{{format}}"
-        ng-model="ctrl.etd"
-        datepicker-options="ctrl.dateOptions"
-        is-open="ctrl.isEtdOpen" />
-    </div>
+          <div class="form-group">
+            <label>Arrival Date</label>
+            <input type="text" class="form-control" ng-click="ctrl.isEtaOpen = !ctrl.isEtaOpen" uib-datepicker-popup="{{format}}" ng-model="ctrl.eta"
+              datepicker-options="ctrl.dateOptions" is-open="ctrl.isEtaOpen" />
+          </div>
 
-    <div class="form-group">
-      <label>Arrival port</label>
-      <input
-        type="text"
-        class="form-control"
-        ng-click="ctrl.isEtaOpen = !ctrl.isEtaOpen"
-        uib-datepicker-popup="{{format}}"
-        ng-model="ctrl.eta"
-        datepicker-options="ctrl.dateOptions"
-        is-open="ctrl.isEtaOpen" />
-    </div>
+          <button type="submit" class="btn btn-primary" ng-click="ctrl.getRoutes(ctrl.etd, ctrl.eta)">
+          Find
+        </button>
+        </div>
 
-    <button
-      type="submit"
-      class="btn btn-primary"
-      ng-click="ctrl.getRoutes(ctrl.etd, ctrl.eta)">
-      Find
-    </button>
+        <div class="col-md-5">
+          <div class="checkbox">
+            <label>
+            <input type="checkbox" ng-model="includeTransShipments" ng-init="includeTransShipments=false"> Include Trans-shipments
+          </label>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 
-  </form>
 
   <!-- Display the list of Voyage data - this is just as an example of displaying the initial data -->
-  <table class="table table-striped"
-         ng-show="ctrl.voyages.length">
+  <table class="table table-striped results" ng-show="ctrl.voyages.length">
     <thead>
       <tr>
-        <th>ID</th>
-        <th>Port</th>
-        <th>ETA</th>
-        <th>ETD</th>
+        <th>#</th>
+        <th>Departure Port</th>
+        <th>Arrival Port</th>
+        <th>Departure Date</th>
+        <th>Arrival Date</th>
+        <th style="width:30%">Vessel</th>
       </tr>
     </thead>
-    <tbody>
-      <tr ng-repeat="voyage in ctrl.voyages">
-        <th>{{ voyage.id }}</th>
-        <td>{{ voyage.port }}</td>
-        <td>{{ (voyage.eta | date) || 'N/A' }}</td>
-        <td>{{ (voyage.etd | date) || 'N/A' }}</td>
+    <tbody ng-if="!includeTransShipments">
+      <tr ng-repeat="voyage in ctrl.voyages | filter:{hasTransShipment:false} track by $index">
+        <td>{{$index+1}}</td>
+        <td>{{ voyage.departurePort }}</td>
+        <td>{{ voyage.arrivalPort}}</td>
+        <td>{{ (voyage.departureDate | date) || 'N/A' }}</td>
+        <td>{{ (voyage.arrivalDate | date) || 'N/A' }}</td>
+        <td>{{ voyage.vessel }}</td>
+      </tr>
+    </tbody>
+    <tbody  ng-if="includeTransShipments">
+      <tr ng-repeat="voyage in ctrl.voyages track by $index">
+        <td>{{$index+1}}</td>
+        <td>{{ voyage.departurePort }}</td>
+        <td>{{ voyage.arrivalPort}}</td>
+        <td>{{ (voyage.departureDate | date) || 'N/A' }}</td>
+        <td>{{ (voyage.arrivalDate | date) || 'N/A' }}</td>
+        <td>{{ voyage.vessel }}</td>
       </tr>
     </tbody>
   </table>
-
 </div>
